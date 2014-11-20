@@ -1,0 +1,8 @@
+cli:
+  image: relateiq/redis-cli
+  links:
+    - redis
+    
+redis:
+  image: crosbymichael/redis
+  
