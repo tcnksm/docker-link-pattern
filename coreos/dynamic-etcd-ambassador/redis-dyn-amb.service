@@ -1,0 +1,18 @@
+[Unit]
+Description=Tells the proxy to expose port 6379 and point it to the service registered as redis-A in etcd.
+After=etcd-amb-redis-cli.service
+Require=etcd-amb-redis-cli.service
+After=register-redis-etcd
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull polvi/dynamic-etcd-amb
+ExecStart=/usr/bin/docker run --link etcd-amb-redis-cli.service:etcd --rm --name %n -p 127.0.0.1::6379 polvi/dynamic-etcd-amb redis-A 6379
+ExecStop=/usr/bin/docker stop -t 3 %n
+
+[X-Fleet]
+X-ConditionMachineOf=etcd-amb-redis-cli.service
+

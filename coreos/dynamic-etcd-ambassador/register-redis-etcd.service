@@ -1,0 +1,19 @@
+[Unit]
+Description=Read the IP and port of redis.service from Docker API and publish it to etcd as service name of redis-A
+After=redis.service
+After=etcd-amb-redis.service
+Require=etcd-amb-redis.service
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull polvi/docker-register
+ExecStart=/usr/bin/docker run --link etcd-amb-redis.service:etcd -v /var/run/docker.sock:/var/run/docker.sock --rm --name %n polvi/docker-register redis.service 6379 redis-A
+ExecStop=/usr/bin/docker stop -t 3 %n
+
+[X-Fleet]
+X-ConditionMachineOf=redis.service
+
+

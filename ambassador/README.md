@@ -1,5 +1,7 @@
 # Link via an Ambassador Container
 
+[Link via an Ambassador Container](http://docs.docker.com/articles/ambassador_pattern_linking/)
+
 ```bash
 (consumer) --> (redis-ambassador) ---network---> (redis-ambassador) --> (redis)
 ```

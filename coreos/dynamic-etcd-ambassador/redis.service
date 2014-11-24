@@ -1,0 +1,12 @@
+[Unit]
+Description=Run redis
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull crosbymichael/redis
+ExecStart=/usr/bin/docker run --rm --name %n -p ${COREOS_PRIVATE_IPV4}::6379 crosbymichael/redis
+ExecStop=/usr/bin/docker stop -t 3 %n
